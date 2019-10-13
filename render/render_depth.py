@@ -1,11 +1,15 @@
 # Author: Wentao Yuan (wyuan1@cs.cmu.edu) 05/31/2018
 
-import bpy
-import mathutils
+import importlib
 import numpy as np
 import os
 import sys
 import time
+# import scripts.modules.bpy as bpy
+import bpy
+
+mathutils = importlib.import_module("mathutils")
+
 
 # Usage: blender -b -P render_depth.py [ShapeNet directory] [model list] [output directory] [num scans per model]
 
@@ -37,7 +41,7 @@ def setup_blender(width, height, focal_length):
 
     # render layer
     scene = bpy.context.scene
-    scene.render.filepath = 'buffer'
+    scene.render.filepath = 'render/buffer'
     scene.render.image_settings.color_depth = '16'
     scene.render.resolution_percentage = 100
     scene.render.resolution_x = width
@@ -53,7 +57,7 @@ def setup_blender(width, height, focal_length):
     tree.links.new(rl.outputs['Depth'], output.inputs[0])
 
     # remove default cube
-    bpy.data.objects['Cube'].select = True
+    bpy.data.objects['Cube'].select_set(state=True)
     bpy.ops.object.delete()
 
     return scene, camera, output
@@ -73,7 +77,7 @@ if __name__ == '__main__':
 
     with open(os.path.join(list_path)) as file:
         model_list = [line.strip() for line in file]
-    open('blender.log', 'w+').close()
+    open('render/blender.log', 'w+').close()
     os.system('rm -rf %s' % output_dir)
     os.makedirs(output_dir)
     np.savetxt(os.path.join(output_dir, 'intrinsics.txt'), intrinsics, '%f')
@@ -88,14 +92,14 @@ if __name__ == '__main__':
         # Redirect output to log file
         old_os_out = os.dup(1)
         os.close(1)
-        os.open('blender.log', os.O_WRONLY)
+        os.open('render/blender.log', os.O_WRONLY)
 
         # Import mesh model
         model_path = os.path.join(model_dir, model_id, 'model.obj')
         bpy.ops.import_scene.obj(filepath=model_path)
 
         # Rotate model by 90 degrees around x-axis (z-up => y-up) to match ShapeNet's coordinates
-        bpy.ops.transform.rotate(value=-np.pi / 2, axis=(1, 0, 0))
+        bpy.ops.transform.rotate(value=-np.pi / 2, orient_axis='X')
 
         # Render
         for i in range(num_scans):
