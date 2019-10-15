@@ -45,7 +45,7 @@ def test(args):
     cd_per_cat = {}
     emd_per_cat = {}
     for i, model_id in enumerate(model_list):
-        print("Completing " + i + ": " + model_id + "\n")
+        print("Completing " + str(i) + ": " + model_id + "\n")
         partial = read_pcd(os.path.join(args.data_dir, 'partial', '%s.pcd' % model_id))
         complete = read_pcd(os.path.join(args.data_dir, 'complete', '%s.pcd' % model_id))
         start = time.time()
