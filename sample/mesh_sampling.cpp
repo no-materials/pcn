@@ -82,9 +82,13 @@ randomPointTriangle(float a1, float a2, float a3, float b1, float b2, float b3, 
 }
 
 inline void
-randPSurface(vtkPolyData *polydata, std::vector<double> *cumulativeAreas, double totalArea, Eigen::Vector4f &p,
-             bool calcNormal, Eigen::Vector3f &n) {
-    float r = static_cast<float> (uniform_deviate(rand()) * totalArea);
+randPSurface(vtkPolyData *polydata,
+             std::vector<double> *cumulativeAreas,
+             double totalArea,
+             Eigen::Vector4f &p,
+             bool calcNormal,
+             Eigen::Vector3f &n) {
+    auto r = static_cast<float> (uniform_deviate(rand()) * totalArea);
 
     std::vector<double>::iterator low = std::lower_bound(cumulativeAreas->begin(), cumulativeAreas->end(), r);
     vtkIdType el = vtkIdType(low - cumulativeAreas->begin());
@@ -108,16 +112,17 @@ randPSurface(vtkPolyData *polydata, std::vector<double> *cumulativeAreas, double
                         float(C[0]), float(C[1]), float(C[2]), p);
 }
 
-void
-uniform_sampling(vtkSmartPointer<vtkPolyData> polydata, size_t n_samples, bool calc_normal,
-                 pcl::PointCloud<pcl::PointNormal> &cloud_out) {
+void uniform_sampling(const vtkSmartPointer<vtkPolyData> &polydata,
+                      size_t n_samples,
+                      bool calc_normal,
+                      pcl::PointCloud <pcl::PointNormal> &cloud_out) {
     polydata->BuildCells();
     vtkSmartPointer<vtkCellArray> cells = polydata->GetPolys();
 
     double p1[3], p2[3], p3[3], totalArea = 0;
     std::vector<double> cumulativeAreas(cells->GetNumberOfCells(), 0);
     size_t i = 0;
-    vtkIdType npts = 0, *ptIds = NULL;
+    vtkIdType npts = 0, *ptIds = nullptr;
     for (cells->InitTraversal(); cells->GetNextCell(npts, ptIds); i++) {
         polydata->GetPoint(ptIds[0], p1);
         polydata->GetPoint(ptIds[1], p2);
@@ -160,7 +165,7 @@ printHelp(int, char **argv) {
     print_value("%d", default_number_samples);
     print_info(")\n");
     print_info(
-            "                -leaf_size X   = the XYZ leaf size for the VoxelGrid -- for data reduction (default: ");
+            "                -leaf_size X   = the XYZ leaf size for the VoxelGrid -- for data reduction(larger value leads to sparser pc) (default: ");
     print_value("%f", default_leaf_size);
     print_info(" m)\n");
     print_info("                -write_normals = flag to write normals to the output pcd\n");
@@ -235,7 +240,7 @@ main(int argc, char **argv) {
         vis.spin();
     }
 
-    pcl::PointCloud<pcl::PointNormal>::Ptr cloud_1(new pcl::PointCloud<pcl::PointNormal>);
+    pcl::PointCloud<pcl::PointNormal>::Ptr cloud_1(new pcl::PointCloud <pcl::PointNormal>);
     uniform_sampling(polydata1, SAMPLE_POINTS_, write_normals, *cloud_1);
 
     if (INTER_VIS) {
@@ -246,17 +251,19 @@ main(int argc, char **argv) {
         vis_sampled.spin();
     }
 
-    pcl::PointCloud<pcl::PointNormal>::Ptr cloud(new pcl::PointCloud<pcl::PointNormal>);
+    pcl::PointCloud<pcl::PointNormal>::Ptr cloud(new pcl::PointCloud <pcl::PointNormal>);
 
     // Voxelgrid
     if (vox_filter) {
-        VoxelGrid<PointNormal> grid_;
+        VoxelGrid <PointNormal> grid_;
         grid_.setInputCloud(cloud_1);
         grid_.setLeafSize(leaf_size, leaf_size, leaf_size);
         grid_.filter(*cloud);
     } else {
         *cloud = *cloud_1;
     }
+
+    cout << vox_filter;
 
     if (vis_result) {
         visualization::PCLVisualizer vis3("VOXELIZED SAMPLES CLOUD");
@@ -267,7 +274,7 @@ main(int argc, char **argv) {
     }
 
     if (!write_normals) {
-        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_xyz(new pcl::PointCloud<pcl::PointXYZ>);
+        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_xyz(new pcl::PointCloud <pcl::PointXYZ>);
         // Strip uninitialized normals from cloud:
         pcl::copyPointCloud(*cloud, *cloud_xyz);
         savePCDFileASCII(argv[pcd_file_indices[0]], *cloud_xyz);
