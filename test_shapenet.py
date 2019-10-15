@@ -72,7 +72,7 @@ def test(args):
                                  [5, 0.5, 0.5])
         if args.save_pcd:
             os.makedirs(os.path.join(args.results_dir, 'pcds', synset_id), exist_ok=True)
-            save_pcd(os.path.join(args.results_dir, 'pcds', '%s.pcd' % model_id), completion[0])
+            save_pcd(os.path.join(args.results_dir, 'pcds', synset_id, '%s.pcd' % model_id), completion[0])
     csv_file.close()
     sess.close()
 
