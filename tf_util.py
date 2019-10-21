@@ -42,7 +42,7 @@ def point_maxpool(inputs, npts, keepdims=False):
 
 def point_unpool(inputs, npts):
     inputs = tf.split(inputs, inputs.shape[0], axis=0)
-    outputs = [tf.tile(f, [1, npts[i], 1]) for i,f in enumerate(inputs)]
+    outputs = [tf.tile(f, [1, npts[i], 1]) for i, f in enumerate(inputs)]
     return tf.concat(outputs, axis=1)
 
 

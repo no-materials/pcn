@@ -8,7 +8,7 @@ import tqdm
 # TODO: fix logging?
 executable = "sample/build/mesh_sampling"
 src_dataset_dir = "/Volumes/warm_blue/datasets/ShapeNetV2"
-model_list_file = "data/shapenet/model_list.txt"
+model_list_file = "data/shapenet/zach_model_list.txt"
 target_data_dir = "data/shapenet/test/complete"
 num_threads = 8
 
@@ -27,7 +27,7 @@ with open(model_list_file) as file:
     model_list = file.read().splitlines()
     file.close()
 
-for i, cat_model_id in tqdm(enumerate(model_list)):
+for i, cat_model_id in tqdm.tqdm(enumerate(model_list)):
 
     cat, model_id = cat_model_id.split('/')
     if not os.path.isdir(os.path.join(target_data_dir, cat)):

@@ -77,6 +77,7 @@ def train(args):
     train_start = time.time()
     init_step = sess.run(global_step)
     for step in range(init_step+1, args.max_step+1):
+        print(step)
         epoch = step * args.batch_size // num_train + 1
         ids, inputs, npts, gt = next(train_gen)
         start = time.time()
