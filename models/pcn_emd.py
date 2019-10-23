@@ -53,12 +53,15 @@ class Model:
         return coarse, fine
 
     def create_loss(self, coarse, fine, gt, alpha):
+        print("COARSE SHAPE: ", coarse.shape)
         gt_ds = gt[:, :coarse.shape[1], :]
+        print("------GT: ", gt[0, :coarse.shape[1], :])
         loss_coarse = earth_mover(coarse, gt_ds)
         add_train_summary('train/coarse_loss', loss_coarse)
         update_coarse = add_valid_summary('valid/coarse_loss', loss_coarse)
 
         loss_fine = chamfer(fine, gt)
+        print("FINE SHAPE: ", fine.shape)
         add_train_summary('train/fine_loss', loss_fine)
         update_fine = add_valid_summary('valid/fine_loss', loss_fine)
 
