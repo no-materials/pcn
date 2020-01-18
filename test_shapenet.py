@@ -53,7 +53,7 @@ def test(args):
         completion = sess.run(model.outputs, feed_dict={inputs: [partial], npts: [partial.shape[0]]})
         total_time += time.time() - start
         cd, emd = sess.run([cd_op, emd_op], feed_dict={output: completion, gt: [complete]})
-        total_cd += cd[0]
+        total_cd += cd
         total_emd += emd
         writer.writerow([model_id, cd, emd])
 
@@ -70,7 +70,7 @@ def test(args):
             plot_path = os.path.join(args.results_dir, 'plots', synset_id, '%s.png' % model_id)
             plot_pcd_three_views(plot_path, [partial, completion[0], complete],
                                  ['input', 'output', 'ground truth'],
-                                 'CD %.4f  EMD %.4f' % (cd[0], emd),
+                                 'CD %.4f  EMD %.4f' % (cd, emd),
                                  [5, 0.5, 0.5])
         if args.save_pcd:
             os.makedirs(os.path.join(args.results_dir, 'pcds', synset_id), exist_ok=True)
