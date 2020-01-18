@@ -55,7 +55,7 @@ def test(args):
         cd = sess.run([cd_op], feed_dict={output: completion, gt: [complete]})
         emd = 0
         print(cd)
-        total_cd += cd
+        total_cd += cd[0]
         total_emd += emd
         writer.writerow([model_id, cd, emd])
 
