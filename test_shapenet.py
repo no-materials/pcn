@@ -11,6 +11,7 @@ import time
 from io_util import read_pcd, save_pcd
 from tf_util import chamfer, earth_mover
 from visu_util import plot_pcd_three_views
+from io_util import read_h5
 
 
 def test(args):
@@ -46,8 +47,8 @@ def test(args):
     emd_per_cat = {}
     for i, model_id in enumerate(model_list):
         print("Completing " + str(i) + ": " + model_id + "\n")
-        partial = read_pcd(os.path.join(args.data_dir, 'partial', '%s.pcd' % model_id))
-        complete = read_pcd(os.path.join(args.data_dir, 'complete', '%s.pcd' % model_id))
+        partial = read_h5(os.path.join(args.data_dir, 'partial', '%s.h5' % model_id))
+        complete = read_h5(os.path.join(args.data_dir, 'gt', '%s.h5' % model_id))
         start = time.time()
         completion = sess.run(model.outputs, feed_dict={inputs: [partial], npts: [partial.shape[0]]})
         total_time += time.time() - start
