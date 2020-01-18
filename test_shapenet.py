@@ -23,7 +23,7 @@ def test(args):
 
     output = tf.placeholder(tf.float32, (1, 16384, 3))
     cd_op = chamfer(output, gt)
-    # emd_op = earth_mover(output, gt)
+    emd_op = earth_mover(model.coarse, gt[:, :model.coarse.shape[1], :])
 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
@@ -52,9 +52,7 @@ def test(args):
         start = time.time()
         completion = sess.run(model.outputs, feed_dict={inputs: [partial], npts: [partial.shape[0]]})
         total_time += time.time() - start
-        cd = sess.run([cd_op], feed_dict={output: completion, gt: [complete]})
-        emd = 0
-        print(cd)
+        cd, emd = sess.run([cd_op, emd_op], feed_dict={output: completion, gt: [complete]})
         total_cd += cd[0]
         total_emd += emd
         writer.writerow([model_id, cd, emd])
