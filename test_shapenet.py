@@ -21,7 +21,7 @@ def test(args):
     model_module = importlib.import_module('.%s' % args.model_type, 'models')
     model = model_module.Model(inputs, npts, gt, tf.constant(1.0))
 
-    output = tf.placeholder(tf.float32, (1, args.num_gt_points, 3))
+    output = tf.placeholder(tf.float32, (1, 16384, 3))
     cd_op = chamfer(output, gt)
     emd_op = earth_mover(output, gt)
 
