@@ -23,7 +23,7 @@ def test(args):
 
     output = tf.placeholder(tf.float32, (1, args.num_gt_points, 3))
     cd_op = chamfer(output, gt)
-    emd_op = earth_mover(model.coarse, gt[:, :model.coarse.shape[1], :])
+    emd_op = earth_mover(output, gt)
 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
