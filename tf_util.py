@@ -54,6 +54,8 @@ def chamfer(pcd1, pcd2):
 
 
 def earth_mover(pcd1, pcd2):
+    print(pcd1.shape)
+    print(pcd2.shape)
     assert pcd1.shape[1] == pcd2.shape[1]
     num_points = tf.cast(pcd1.shape[1], tf.float32)
     match = tf_approxmatch.approx_match(pcd1, pcd2)
