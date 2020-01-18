@@ -21,9 +21,9 @@ def test(args):
     model_module = importlib.import_module('.%s' % args.model_type, 'models')
     model = model_module.Model(inputs, npts, gt, tf.constant(1.0))
 
-    output = tf.placeholder(tf.float32, (1, 2048, 3))
+    output = tf.placeholder(tf.float32, (1, 16384, 3))
     cd_op = chamfer(output, gt)
-    emd_op = earth_mover(output, gt)
+    # emd_op = earth_mover(output, gt)
 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
@@ -52,7 +52,8 @@ def test(args):
         start = time.time()
         completion = sess.run(model.outputs, feed_dict={inputs: [partial], npts: [partial.shape[0]]})
         total_time += time.time() - start
-        cd, emd = sess.run([cd_op, emd_op], feed_dict={output: completion, gt: [complete]})
+        cd = sess.run([cd_op], feed_dict={output: completion, gt: [complete]})
+        emd = 0
         total_cd += cd
         total_emd += emd
         writer.writerow([model_id, cd, emd])

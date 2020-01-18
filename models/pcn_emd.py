@@ -6,8 +6,8 @@ from tf_util import *
 
 class Model:
     def __init__(self, inputs, npts, gt, alpha):
-        self.num_coarse = 512
-        self.grid_size = 2
+        self.num_coarse = 1024
+        self.grid_size = 4
         self.grid_scale = 0.05
         self.num_fine = self.grid_size ** 2 * self.num_coarse
         self.features = self.create_encoder(inputs, npts)
